@@ -1,0 +1,17 @@
+// signals
+#ifndef SIGNAL_VARS_V1
+#define SIGNAL_VARS_V1
+
+#define SIGNAL_CLEAR		15
+#define SIGNAL_HALT			14
+#define SIGNAL_NEXT_SERIE	13
+#define SIGNAL_NEXT_MODE	12
+#define SIGNAL_WRITE_FAV	11
+#define SIGNAL_TO_FAV		10
+
+#define SIGNAL_ECONOM		21
+
+#define SIGNAL_AWAKEN		20
+
+#define SIGNAL_UNDEFINED_STATE		100
+#endif
