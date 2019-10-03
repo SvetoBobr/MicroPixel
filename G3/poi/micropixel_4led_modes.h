@@ -30,7 +30,7 @@ void mode_1();
 void mode_2();				
 void mode_3();
 void mode_4();
-
+void mode_5();
 
 //unsigned char const_light( unsigned char sch,  unsigned char delay, unsigned char mask );
 
