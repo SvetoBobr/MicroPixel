@@ -1,4 +1,4 @@
-// t85	attiny85	38400 prog
+// t45	attiny45	38400 prog
 // board	MMCU		programm_after_make
 
 // 8LED bike backlight
@@ -19,19 +19,8 @@
 #define FRAME_DELAY 0	// there are some problems wth this constant
 #define MAX_LEVEL	255
 #define HALF_LEVEL	60
-#define PACK_SIZE	50
+#define PACK_SIZE	60
 
-/*
-#define FRAME_DELAY NO_DELAY	// as fast as MCU can
-#define MAX_LEVEL	60
-#define HALF_LEVEL	20			// brightness in economic mode
-
-#define PACK_SIZE	8
-#define LED_NUM	PACK_SIZE
-*/
-
-// patterns and colors	
-// totally changed between G2 and G3 - be careful
 #define MODE_GATE	6
 
 #if MODE_GATE>MODE_NUM
@@ -47,23 +36,8 @@ unsigned char serie;//, ss;
 unsigned char power;
 
 
-// ***************** ADVANCED BEHAVIOR & MODULES *****************************************
-// uncoment to enable fav 
-//#define USE_FAV
-#define FAV_MAX	15
-// comment not to use
-//#define SOFTWARE_SLEEP
-//#define ECONOM_ENABLED
-
-
-
+#define START_BYTE	226
 #include "../apa102-driver-2.c"
-//#include "../palette_7__low.c"
-//#include "../memory-api.c"
-//#include "../power-api.c"
-//#include "../button-api.c"
-//#include "../opt-api.c"
-
 
 // =========================================================================================================
 // =================== MAIN SECTION ========================================================================
@@ -84,12 +58,6 @@ unsigned char mask[PACK_SIZE+1];
 // >>>>>>>>>> main part >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 int main(){
-//	read_data();
-//	check_all();
-	
-//	power=ACTIVE;
-//	stat=0;
-	//ss=0;
 	
 	init_io();
 
@@ -105,8 +73,22 @@ int main(){
 		for (j=3; j<PACK_SIZE; j+=4){
 			b[j]=10;
 		}
-		mask[50]=1;
-		sendRawRGBpack(50, r, g, b, mask);		
+		
+		mask[PACK_SIZE]=1;
+		sendRawRGBpack(PACK_SIZE, r, g, b, mask);	
+		
+			for (j=0; j<PACK_SIZE; j++){
+			r[j]=0;
+			g[j]=10;
+			b[j]=0;
+			mask[j]=1;
+		}
+		for (j=3; j<PACK_SIZE; j+=4){
+			b[j]=10;
+		}
+		
+		mask[PACK_SIZE]=1;
+		sendRawRGBpack(PACK_SIZE, r, g, b, mask);
 	}
 	
 	return 0;
