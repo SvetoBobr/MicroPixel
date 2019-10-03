@@ -31,7 +31,10 @@
 	#define FRAME_DELAY	100
 #endif
 
+#ifndef START_BYTE
+	#define START_BYTE	255
 
+#endif
 
 struct RGB{
 	unsigned char R;
@@ -92,7 +95,7 @@ inline void endFrame(){
 }
 
 inline void sendRGB( unsigned char r, unsigned char g, unsigned char b ){
-	sendByte(255);	// initial
+	sendByte(START_BYTE);	// initial
 	
 	sendByte(b);
 	sendByte(g);
@@ -100,7 +103,7 @@ inline void sendRGB( unsigned char r, unsigned char g, unsigned char b ){
 }
 
 inline void sendRGB_( struct RGB *a ){
-	sendByte(255);	// initial
+	sendByte(START_BYTE);	// initial
 	
 	sendByte((*a).B);
 	sendByte((*a).G);
