@@ -1,4 +1,4 @@
-// t85	attiny85	38400 prog
+// t45	attiny45	38400 prog
 // board	MMCU		programm_after_make
 
 // 8LED bike backlight
@@ -262,10 +262,12 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					break;
 				case 10:	// russian flag
 					#warning empty_mode
+					b[0]=b[1]=b[2]=b[3]=0;
 					
 					break;
 				case 11:	// green-red
 					#warning empty_mode
+					b[0]=b[1]=b[2]=b[3]=0;
 					break;
 				case 12:	// blue-red
 					#warning empty_mode
