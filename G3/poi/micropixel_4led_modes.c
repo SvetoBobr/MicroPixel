@@ -14,7 +14,9 @@ void make_serie(unsigned char sss){
 			case 4:
 				mode_4();
 				break;;
-			
+			case 5:
+				mode_5();
+				break;;			
 			default:
 				const_light(0, 1);
 				break;;
@@ -67,7 +69,12 @@ void mode_3(){	// gears
 	const_light_legacy(mode, 60, LED3+LED4 );
 }
 
-void mode_4(){	// flower
+void mode_4(){	// chess
+	const_light_legacy(mode, 60, LED1+LED3 );
+	const_light_legacy(mode, 60, LED2+LED4 );
+}
+
+void mode_5(){	// flower
 	const_light_legacy(mode, 30, LED1 );
 	const_light_legacy(mode, 30, LED2 );
 	const_light_legacy(mode, 30, LED3 );

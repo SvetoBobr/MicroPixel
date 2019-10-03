@@ -76,7 +76,7 @@ unsigned char power;
 //	unsigned char level;
 #endif
 
-void set_level(unsigned char );
+
 
 //#include "../fav-api.h"
 
@@ -107,6 +107,7 @@ void formColorPack_scheme( unsigned char n, rgb_pointer color[], rgb_pointer pac
 
 void fill_mask();
 void flush_mask();
+void flush();
 
 inline unsigned char const_light( unsigned char sch,  unsigned char delay );
 
@@ -190,11 +191,11 @@ static unsigned char rgb3[3];
 static unsigned char rgb4[3];
 
 	
-void set_level(unsigned char l){
-	//level=l;
-	rgb[0]=rgb2[0]=rgb3[0]=rgb4[2]=MAX_LEVEL;
-	rgb[1]=rgb2[1]=rgb3[1]=rgb[2]=rgb2[2]=rgb3[2]=rgb4[0]=rgb4[1]=0;
-
+void flush(){
+	unsigned char i;
+	for (i=0; i<LED_NUM; i++){
+		r[i]=g[i]=b[i]=0;
+	}
 }
 
 void l_shift(unsigned char arr[], unsigned char l){
@@ -215,15 +216,11 @@ void r_shift(unsigned char arr[], unsigned char l){
 	arr[0]=tmp;
 }
 
-//unsigned char wave_r[PACK_SIZE]={255,220,170,83,0,0,0,0,0,0,83,170,220,255,255,255,255,255};
-//unsigned char wave_g[PACK_SIZE]={255,255,255,255,220,170,83,0,0,0,0,0,0,83,170,220,255,255};
-//unsigned char wave_b[PACK_SIZE]={0,0,0,0,0,0,83,170,220,255,255,255,255,255,255,220,170,83};
 
 unsigned char wave_1[PACK_SIZE]={255,140,55,5};
 unsigned char wave_2[PACK_SIZE]={255,140,55,5};
 unsigned char wave_3[PACK_SIZE]={50,255,50,0};
-//unsigned char wave_3[PACK_SIZE]={255,226,198,169,141,113,84,56,28,28,56,84,113,141,169,198,226,255};
-//unsigned char wave_2[PACK_SIZE]={0,0,15,30,60,105,150,200,255,255,200,150,105,60,30,15,0,0};
+
 unsigned char  const_light( unsigned char sch,  unsigned char delay){
 	static unsigned char rgbs=0;
 	static unsigned char tmpsch=1;
@@ -243,57 +240,34 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 		} else {
 			switch (sch){
 				case 8:
-					for (j=0; j<LED_NUM; j++){
-						if ( (j<2) || (j>(LED_NUM-3)) ) {
-							r[j]=MAX_LEVEL; g[j]=MAX_LEVEL; b[j]=0;
-						} else {
-							r[j]=0; g[j]=MAX_LEVEL; b[j]=0;
-						}
-					}
+					flush();
+					r[1]=r[3]=g[2]=g[0]=MAX_LEVEL;
 					break;
 				case 9:
-					for (j=0; j<LED_NUM; j++){
-						if ( (j<2) || (j>(LED_NUM-3)) ) {
-							r[j]=MAX_LEVEL; g[j]=0; b[j]=0;
-						} else {
-							r[j]=0; g[j]=0; b[j]=MAX_LEVEL;
-						}
-					}
+					flush();
+					b[1]=b[3]=g[2]=g[0]=MAX_LEVEL;
 					break;
 				case 10:	// russian flag
-					#warning empty_mode
-					b[0]=b[1]=b[2]=b[3]=0;
-					
+					flush();
+					r[1]=r[3]=b[2]=b[0]=MAX_LEVEL;
 					break;
-				case 11:	// green-red
-					#warning empty_mode
-					b[0]=b[1]=b[2]=b[3]=0;
+			}		
+					
+			switch (sch){	case 11:	// green-red
+					flush();
+					r[1]=r[2]=g[3]=g[0]=MAX_LEVEL;
 					break;
 				case 12:	// blue-red
-					#warning empty_mode
-					b[0]=b[1]=b[2]=b[3]=0;
+					flush();
+					b[1]=b[2]=g[3]=g[0]=MAX_LEVEL;
 					break;					
-					/*
-				case 12:	// blue-yellow
-					r[0]=r[1]=r[2]=r[3]=150;
-					g[4]=g[5]=g[6]=g[7]=0;
-					g[0]=g[1]=g[2]=g[3]=150;
-					r[4]=r[5]=r[6]=r[7]=0;
-					b[0]=b[1]=b[2]=b[3]=0;
-					b[4]=b[5]=b[6]=b[7]=255;
-					break;*/
-					
-			}
-			switch (sch){
 				case 13:	// b-r-g
-					for (j=0; j<LED_NUM; j++){
-						r[j]=g[j]=b[j]=0;
-						//r[j]=255; r[j+1]=0; r[j+2]=0;
-						//g[j]=0; g[j+1]=0; g[j+2]=255;
-						//b[j]=0; b[j+1]=255; b[j+2]=0;
-					}
-					r[0]=b[1]=g[2]=r[3]=255;
+					flush();
+					r[1]=r[2]=b[3]=b[0]=MAX_LEVEL;
 					break;
+			}
+			
+			switch (sch){		
 				case 14:	// GR rainbow
 					for (j=0; j<LED_NUM; j++){
 						r[j]=rgb2[0]; 
@@ -375,7 +349,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					}
 					if (++tmpsch>8) tmpsch=1;
 			}
-			switch (sch){
+						switch (sch){
 				case 19:
 					if (++counter>=60){
 						counter=0;
@@ -427,6 +401,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					}
 					break;
 			}
+			
 		}		
 			
 		if ( check_button()==1 ) {
