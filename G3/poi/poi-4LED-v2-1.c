@@ -61,12 +61,12 @@ unsigned char power;
 
 // #define RESET_MODE_ON_SERIE	// uncomment to start each serie fron 1st mode
 
-#define INC_DELAY	14
-#define S_DELAY		100
-#define ECONOM_DELAY	700
-#define HALT_DELAY  	1500
-#define W_FAV_DELAY		3000
-#define T_FAV_DELAY		10000
+#define INC_DELAY	150
+#define S_DELAY		700
+#define ECONOM_DELAY	1500
+#define HALT_DELAY  	3000
+#define W_FAV_DELAY		6000
+#define T_FAV_DELAY		12000
 #define CLEAR_DELAY 	18000
 
 #define WAKE_THRESHOLD	20

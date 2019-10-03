@@ -314,8 +314,8 @@ process_button:
 	sts counter,__zero_reg__
 	rjmp .L32
 .L27:
-	cpi r24,17
-	ldi r18,39
+	cpi r24,-31
+	ldi r18,46
 	cpc r25,r18
 	brlo .L30
 	ldi r24,lo8(10)
@@ -333,8 +333,8 @@ process_button:
 	sts fav_on,__zero_reg__
 	rjmp .L49
 .L30:
-	cpi r24,-71
-	ldi r18,11
+	cpi r24,113
+	ldi r18,23
 	cpc r25,r18
 	brlo .L34
 	lds r24,fav_on
@@ -364,8 +364,8 @@ process_button:
 	rcall check_all
 	rjmp .L38
 .L34:
-	cpi r24,-35
-	ldi r18,5
+	cpi r24,-71
+	ldi r18,11
 	cpc r25,r18
 	brlo .L35
 	ldi r24,lo8(14)
@@ -376,8 +376,8 @@ process_button:
 	sts power,__zero_reg__
 	rjmp .L38
 .L35:
-	cpi r24,-67
-	ldi r18,2
+	cpi r24,-35
+	ldi r18,5
 	cpc r25,r18
 	brlo .L36
 	ldi r24,lo8(21)
@@ -398,8 +398,9 @@ process_button:
 	sts stat,__zero_reg__
 	rjmp .L48
 .L36:
-	cpi r24,101
-	cpc r25,__zero_reg__
+	cpi r24,-67
+	ldi r18,2
+	cpc r25,r18
 	brlo .L39
 	lds r24,fav_on
 	cpse r24,__zero_reg__
@@ -418,7 +419,8 @@ process_button:
 	sts serie,r24
 	rjmp .L38
 .L39:
-	sbiw r24,15
+	cpi r24,-105
+	cpc r25,__zero_reg__
 	brsh .+2
 	rjmp .L31
 	or r22,r23
@@ -460,42 +462,42 @@ check_button:
 .L__stack_usage = 0
 	sbis 0x16,4
 	rjmp .L51
-	sts button_state.1766,__zero_reg__
+	sts button_state.1767,__zero_reg__
 	rjmp .L52
 .L51:
 	ldi r24,lo8(1)
-	sts button_state.1766,r24
+	sts button_state.1767,r24
 .L52:
-	lds r22,button_state.1766
+	lds r22,button_state.1767
 	cpi r22,lo8(1)
 	brne .L53
-	lds r24,hold.1765
-	lds r25,hold.1765+1
+	lds r24,hold.1766
+	lds r25,hold.1766+1
 	adiw r24,1
-	sts hold.1765+1,r25
-	sts hold.1765,r24
+	sts hold.1766+1,r25
+	sts hold.1766,r24
 .L53:
-	lds r24,last_button_state.1767
+	lds r24,last_button_state.1768
 	cpse r22,r24
 	rjmp .L56
 	ldi r23,0
-	lds r24,hold.1765
-	lds r25,hold.1765+1
+	lds r24,hold.1766
+	lds r25,hold.1766+1
 	rcall process_button
 	rjmp .L54
 .L56:
 	ldi r24,0
 .L54:
-	lds r25,button_state.1766
+	lds r25,button_state.1767
 	cpse r25,__zero_reg__
 	rjmp .L55
-	lds r18,last_button_state.1767
+	lds r18,last_button_state.1768
 	cpse r18,__zero_reg__
 	rjmp .L55
-	sts hold.1765+1,__zero_reg__
-	sts hold.1765,__zero_reg__
+	sts hold.1766+1,__zero_reg__
+	sts hold.1766,__zero_reg__
 .L55:
-	sts last_button_state.1767,r25
+	sts last_button_state.1768,r25
 	ret
 	.size	check_button, .-check_button
 .global	process_signal
@@ -1213,7 +1215,7 @@ const_light:
 	cpi r30,lo8(r+4)
 	cpc r31,r27
 	brne .L112
-	lds r18,rgbs.1908
+	lds r18,rgbs.1907
 	cpse r18,__zero_reg__
 	rjmp .L113
 	subi r25,lo8(-(1))
@@ -1257,7 +1259,7 @@ const_light:
 	cpi r31,lo8(18)
 	breq .+2
 	rjmp .L116
-	lds r24,tmpsch.1909
+	lds r24,tmpsch.1908
 	mov r18,r24
 	ldi r19,0
 	movw r30,r18
@@ -1291,7 +1293,7 @@ const_light:
 	cpi r30,lo8(r+4)
 	cpc r31,r27
 	brne .L122
-	lds r18,rgbs.1908
+	lds r18,rgbs.1907
 	cpse r18,__zero_reg__
 	rjmp .L123
 	subi r25,lo8(-(1))
@@ -1302,7 +1304,7 @@ const_light:
 	cpi r25,lo8(-1)
 	breq .+2
 	rjmp .L134
-	sts rgbs.1908,r7
+	sts rgbs.1907,r7
 	rjmp .L134
 .L123:
 	cpi r18,lo8(1)
@@ -1317,7 +1319,7 @@ const_light:
 	breq .+2
 	rjmp .L134
 .L128:
-	sts rgbs.1908,__zero_reg__
+	sts rgbs.1907,__zero_reg__
 	rjmp .L134
 .L117:
 	lds r20,rgb4
@@ -1341,7 +1343,7 @@ const_light:
 	cpi r30,lo8(r+4)
 	cpc r31,r27
 	brne .L125
-	lds r18,rgbs.1908
+	lds r18,rgbs.1907
 	cpse r18,__zero_reg__
 	rjmp .L126
 	subi r25,lo8(-(1))
@@ -1380,7 +1382,7 @@ const_light:
 	cpi r30,lo8(r+4)
 	cpc r31,r27
 	brne .L129
-	lds r18,rgbs.1908
+	lds r18,rgbs.1907
 	cpse r18,__zero_reg__
 	rjmp .L130
 	subi r25,lo8(-(1))
@@ -1399,7 +1401,7 @@ const_light:
 	breq .+2
 	rjmp .L134
 	ldi r30,lo8(2)
-	sts rgbs.1908,r30
+	sts rgbs.1907,r30
 	rjmp .L134
 .L131:
 	cpi r18,lo8(2)
@@ -1428,10 +1430,10 @@ const_light:
 	subi r24,lo8(-(1))
 	cpi r24,lo8(9)
 	brsh .L133
-	sts tmpsch.1909,r24
+	sts tmpsch.1908,r24
 	rjmp .L134
 .L133:
-	sts tmpsch.1909,r7
+	sts tmpsch.1908,r7
 	rjmp .L134
 .L116:
 	ldd r30,Y+7
@@ -1451,14 +1453,14 @@ const_light:
 	rjmp .L139
 	rjmp .L134
 .L137:
-	lds r24,counter.1910
+	lds r24,counter.1909
 	subi r24,lo8(-(1))
 	cpi r24,lo8(60)
 	brsh .L140
-	sts counter.1910,r24
+	sts counter.1909,r24
 	rjmp .L141
 .L140:
-	sts counter.1910,__zero_reg__
+	sts counter.1909,__zero_reg__
 	ldi r22,lo8(4)
 	ldi r24,lo8(wave_1)
 	ldi r25,hi8(wave_1)
@@ -1497,14 +1499,14 @@ const_light:
 	brne .L142
 	rjmp .L134
 .L135:
-	lds r24,counter.1910
+	lds r24,counter.1909
 	subi r24,lo8(-(1))
 	cpi r24,lo8(60)
 	brsh .L143
-	sts counter.1910,r24
+	sts counter.1909,r24
 	rjmp .L144
 .L143:
-	sts counter.1910,__zero_reg__
+	sts counter.1909,__zero_reg__
 	ldi r22,lo8(4)
 	ldi r24,lo8(wave_1)
 	ldi r25,hi8(wave_1)
@@ -1544,14 +1546,14 @@ const_light:
 	brne .L145
 	rjmp .L134
 .L138:
-	lds r24,counter.1910
+	lds r24,counter.1909
 	subi r24,lo8(-(1))
 	cpi r24,lo8(60)
 	brsh .L146
-	sts counter.1910,r24
+	sts counter.1909,r24
 	rjmp .L147
 .L146:
-	sts counter.1910,__zero_reg__
+	sts counter.1909,__zero_reg__
 	ldi r22,lo8(4)
 	ldi r24,lo8(wave_1)
 	ldi r25,hi8(wave_1)
@@ -1591,14 +1593,14 @@ const_light:
 	brne .L148
 	rjmp .L134
 .L139:
-	lds r24,counter.1910
+	lds r24,counter.1909
 	subi r24,lo8(-(1))
 	cpi r24,lo8(60)
 	brsh .L149
-	sts counter.1910,r24
+	sts counter.1909,r24
 	rjmp .L150
 .L149:
-	sts counter.1910,__zero_reg__
+	sts counter.1909,__zero_reg__
 	ldi r22,lo8(4)
 	ldi r24,lo8(wave_1)
 	ldi r25,hi8(wave_1)
@@ -2084,21 +2086,21 @@ main:
 	rcall process_signal
 	rjmp .L232
 	.size	main, .-main
-	.local	counter.1910
-	.comm	counter.1910,1,1
+	.local	counter.1909
+	.comm	counter.1909,1,1
 	.data
-	.type	tmpsch.1909, @object
-	.size	tmpsch.1909, 1
-tmpsch.1909:
+	.type	tmpsch.1908, @object
+	.size	tmpsch.1908, 1
+tmpsch.1908:
 	.byte	1
-	.local	rgbs.1908
-	.comm	rgbs.1908,1,1
-	.local	last_button_state.1767
-	.comm	last_button_state.1767,1,1
-	.local	hold.1765
-	.comm	hold.1765,2,1
-	.local	button_state.1766
-	.comm	button_state.1766,1,1
+	.local	rgbs.1907
+	.comm	rgbs.1907,1,1
+	.local	last_button_state.1768
+	.comm	last_button_state.1768,1,1
+	.local	hold.1766
+	.comm	hold.1766,2,1
+	.local	button_state.1767
+	.comm	button_state.1767,1,1
 .global	wave_3
 	.type	wave_3, @object
 	.size	wave_3, 4
