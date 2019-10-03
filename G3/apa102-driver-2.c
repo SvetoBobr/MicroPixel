@@ -111,7 +111,7 @@ inline void sendRGB_( struct RGB *a ){
 }
 
 
-inline void sendRGBpack( unsigned char n, rgb_pointer a[]  ){
+inline static void sendRGBpack( unsigned char n, rgb_pointer a[]  ){
 	unsigned char i;
 	
 	startFrame();
@@ -126,7 +126,7 @@ inline void sendRGBpack( unsigned char n, rgb_pointer a[]  ){
 	#endif
 }
 
-inline void sendRawRGBpack( unsigned char n, unsigned char r[], unsigned char g[], unsigned char b[], unsigned char mask[]  ){
+inline static void sendRawRGBpack( unsigned char n, unsigned char r[], unsigned char g[], unsigned char b[], unsigned char mask[]  ){
 	unsigned char i;
 	
 	startFrame();
