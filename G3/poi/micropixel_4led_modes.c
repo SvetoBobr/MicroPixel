@@ -94,10 +94,6 @@ void const_light_legacy(unsigned char mode, unsigned char t, unsigned char ledma
 	if ( (ledmask & 4) == 4) mask[3]=1;
 	if ( (ledmask & 8) == 8) mask[4]=1;
 	
-	if ( (ledmask & 16) == 16) mask[5]=1;
-	if ( (ledmask & 32) == 32) mask[6]=1;
-	if ( (ledmask & 64) == 64) mask[7]=1;
-	if ( (ledmask & 128) == 128) mask[8]=1;
 	const_light(mode, t);
 }
 

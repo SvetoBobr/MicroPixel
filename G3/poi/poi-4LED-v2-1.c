@@ -19,7 +19,7 @@
 #define FRAME_DELAY 1	// there are some problems wth this constant
 #define MAX_LEVEL	255
 #define HALF_LEVEL	60
-#define PACK_SIZE	8
+#define PACK_SIZE	4
 
 /*
 #define FRAME_DELAY NO_DELAY	// as fast as MCU can
@@ -41,7 +41,7 @@
 
 //modes
 
-#include "./micropixel_8led_modes.h"
+#include "./micropixel_4led_modes.h"
 
 
 
@@ -113,7 +113,7 @@ inline unsigned char const_light( unsigned char sch,  unsigned char delay );
 // >>>>>>>>>>> modes  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 void  make_serie(unsigned char sss);
 
-#include "./micropixel_8led_modes.c"
+#include "./micropixel_4led_modes.c"
 
 // >>>>>>>>>> main part >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -219,9 +219,9 @@ void r_shift(unsigned char arr[], unsigned char l){
 //unsigned char wave_g[PACK_SIZE]={255,255,255,255,220,170,83,0,0,0,0,0,0,83,170,220,255,255};
 //unsigned char wave_b[PACK_SIZE]={0,0,0,0,0,0,83,170,220,255,255,255,255,255,255,220,170,83};
 
-unsigned char wave_1[PACK_SIZE]={255,195,140,95,55,25,5,0};
-unsigned char wave_2[PACK_SIZE]={255,195,140,95,55,25,5,0};
-unsigned char wave_3[PACK_SIZE]={50,150,255,150,50,0,0,0};
+unsigned char wave_1[PACK_SIZE]={255,140,55,5};
+unsigned char wave_2[PACK_SIZE]={255,140,55,5};
+unsigned char wave_3[PACK_SIZE]={50,255,50,0};
 //unsigned char wave_3[PACK_SIZE]={255,226,198,169,141,113,84,56,28,28,56,84,113,141,169,198,226,255};
 //unsigned char wave_2[PACK_SIZE]={0,0,15,30,60,105,150,200,255,255,200,150,105,60,30,15,0,0};
 unsigned char  const_light( unsigned char sch,  unsigned char delay){
@@ -261,20 +261,15 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					}
 					break;
 				case 10:	// russian flag
-					r[0]=r[1]=g[0]=g[1]=b[0]=b[1]=150;
-					r[3]=r[4]=r[5]=r[2]=g[3]=g[4]=g[5]=g[2]=0;
-					r[6]=r[7]=b[2]=b[3]=b[4]=b[5]=255;
+					#warning empty_mode
 					
 					break;
 				case 11:	// green-red
-					r[0]=r[1]=r[2]=r[3]=g[4]=g[5]=g[6]=g[7]=255;
-					g[0]=g[1]=g[2]=g[3]=r[4]=r[5]=r[6]=r[7]=0;
-					b[0]=b[1]=b[2]=b[3]=b[4]=b[5]=b[6]=b[7]=0;
+					#warning empty_mode
 					break;
 				case 12:	// blue-red
-					r[0]=r[1]=r[2]=r[3]=b[4]=b[5]=b[6]=b[7]=255;
-					g[0]=g[1]=g[2]=g[3]=r[4]=r[5]=r[6]=r[7]=0;
-					b[0]=b[1]=b[2]=b[3]=g[4]=g[5]=g[6]=g[7]=0;
+					#warning empty_mode
+					b[0]=b[1]=b[2]=b[3]=0;
 					break;					
 					/*
 				case 12:	// blue-yellow
@@ -295,7 +290,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						//g[j]=0; g[j+1]=0; g[j+2]=255;
 						//b[j]=0; b[j+1]=255; b[j+2]=0;
 					}
-					r[0]=b[1]=g[2]=r[3]=b[4]=g[5]=r[6]=b[7]=255;
+					r[0]=b[1]=g[2]=r[3]=255;
 					break;
 				case 14:	// GR rainbow
 					for (j=0; j<LED_NUM; j++){

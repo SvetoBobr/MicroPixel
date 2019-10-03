@@ -921,13 +921,11 @@ flush_mask:
 .L__stack_usage = 0
 	ldi r30,lo8(mask)
 	ldi r31,hi8(mask)
-.L81:
-	st Z+,__zero_reg__
-	ldi r24,hi8(mask+9)
-	cpi r30,lo8(mask+9)
-	cpc r31,r24
-	brne .L81
-/* epilogue start */
+	st Z,__zero_reg__
+	std Z+1,__zero_reg__
+	std Z+2,__zero_reg__
+	std Z+3,__zero_reg__
+	std Z+4,__zero_reg__
 	ret
 	.size	flush_mask, .-flush_mask
 .global	fill_mask
@@ -940,13 +938,11 @@ fill_mask:
 	ldi r30,lo8(mask)
 	ldi r31,hi8(mask)
 	ldi r24,lo8(1)
-.L84:
-	st Z+,r24
-	ldi r25,hi8(mask+9)
-	cpi r30,lo8(mask+9)
-	cpc r31,r25
-	brne .L84
-/* epilogue start */
+	st Z,r24
+	std Z+1,r24
+	std Z+2,r24
+	std Z+3,r24
+	std Z+4,r24
 	ret
 	.size	fill_mask, .-fill_mask
 .global	set_level
@@ -1001,14 +997,14 @@ l_shift:
 	movw r30,r24
 	ld r19,Z
 	ldi r18,lo8(1)
-.L88:
+.L84:
 	cp r18,r22
-	brsh .L90
+	brsh .L86
 	ldd r20,Z+1
 	st Z+,r20
 	subi r18,lo8(-(1))
-	rjmp .L88
-.L90:
+	rjmp .L84
+.L86:
 	add r24,r22
 	adc r25,__zero_reg__
 	movw r30,r24
@@ -1028,18 +1024,18 @@ r_shift:
 	adc r31,__zero_reg__
 	sbiw r30,1
 	ld r18,Z
-.L94:
+.L90:
 	subi r22,lo8(-(-1))
 	movw r30,r24
-	breq .L95
+	breq .L91
 	add r30,r22
 	adc r31,__zero_reg__
 	movw r26,r30
 	sbiw r26,1
 	ld r19,X
 	st Z,r19
-	rjmp .L94
-.L95:
+	rjmp .L90
+.L91:
 	st Z,r18
 	ret
 	.size	r_shift, .-r_shift
@@ -1080,17 +1076,17 @@ const_light:
 	lds r24,bbb
 	cpi r24,lo8(1)
 	brne .+2
-	rjmp .L97
+	rjmp .L93
 	mov r5,r22
 	ldd r18,Y+1
 	std Y+7,r18
-	mov r8,__zero_reg__
-	ldi r27,lo8(-106)
-	mov r9,r27
+	mov r9,__zero_reg__
+	clr r8
+	dec r8
 	clr r7
 	inc r7
-	ldi r17,lo8(2)
-	mov r6,r17
+	ldi r27,lo8(2)
+	mov r6,r27
 	mov r24,r18
 	ldi r25,0
 	movw r22,r24
@@ -1108,13 +1104,13 @@ const_light:
 	sbci r31,hi8(-(mb))
 	std Y+6,r31
 	std Y+5,r30
-.L98:
-	cp r8,r5
+.L94:
+	cp r9,r5
 	brne .+2
-	rjmp .L212
+	rjmp .L199
 	ldd r31,Y+7
 	cpi r31,lo8(8)
-	brsh .L99
+	brsh .L95
 	ldd r26,Y+1
 	ldd r27,Y+2
 	ld r20,X
@@ -1130,7 +1126,7 @@ const_light:
 	ldi r25,hi8(g)
 	ldi r16,lo8(b)
 	ldi r17,hi8(b)
-.L100:
+.L96:
 	st Z+,r20
 	movw r26,r24
 	st X+,r19
@@ -1138,179 +1134,72 @@ const_light:
 	movw r26,r16
 	st X+,r18
 	movw r16,r26
-	ldi r22,lo8(r+8)
-	ldi r23,hi8(r+8)
+	ldi r22,lo8(r+4)
+	ldi r23,hi8(r+4)
 	cp r22,r30
 	cpc r23,r31
-	brne .L100
-	rjmp .L143
-.L99:
+	brne .L96
+	rjmp .L131
+.L95:
 	ldd r23,Y+7
-	cpi r23,lo8(10)
-	brne .+2
-	rjmp .L103
-	brsh .L104
-	cpi r23,lo8(8)
-	breq .L105
 	cpi r23,lo8(9)
-	breq .+2
-	rjmp .L102
-	ldi r18,lo8(r)
-	ldi r19,hi8(r)
-	ldi r26,lo8(g)
-	ldi r27,hi8(g)
+	breq .L99
+	cpi r23,lo8(12)
+	breq .L100
+	cpi r23,lo8(8)
+	brne .L188
+	ldi r30,lo8(r)
+	ldi r31,hi8(r)
+	ldi r24,lo8(g)
+	ldi r25,hi8(g)
 	ldi r20,lo8(b)
 	ldi r21,hi8(b)
-	ldi r24,lo8(-2)
-	rjmp .L115
+.L102:
+	st Z+,r8
+	movw r26,r24
+	st X+,r8
+	movw r24,r26
+	movw r26,r20
+	st X+,__zero_reg__
+	movw r20,r26
+	ldi r27,hi8(r+4)
+	cpi r30,lo8(r+4)
+	cpc r31,r27
+	brne .L102
+	rjmp .L131
+.L99:
+	ldi r30,lo8(r)
+	ldi r31,hi8(r)
+	ldi r24,lo8(g)
+	ldi r25,hi8(g)
+	ldi r20,lo8(b)
+	ldi r21,hi8(b)
 .L104:
-	ldd r24,Y+7
-	cpi r24,lo8(11)
-	brne .+2
-	rjmp .L107
-	cpi r24,lo8(12)
-	breq .+2
-	rjmp .L102
-	ldi r25,lo8(-1)
-	sts b+7,r25
-	sts b+6,r25
-	sts b+5,r25
-	sts b+4,r25
-	sts r+3,r25
-	sts r+2,r25
-	sts r+1,r25
-	sts r,r25
-	sts r+7,__zero_reg__
-	sts r+6,__zero_reg__
-	sts r+5,__zero_reg__
-	sts r+4,__zero_reg__
-	sts g+3,__zero_reg__
-	sts g+2,__zero_reg__
-	sts g+1,__zero_reg__
-	sts g,__zero_reg__
-	sts g+7,__zero_reg__
-	sts g+6,__zero_reg__
-	sts g+5,__zero_reg__
-	sts g+4,__zero_reg__
-	rjmp .L207
-.L105:
-	ldi r18,lo8(r)
-	ldi r19,hi8(r)
-	ldi r26,lo8(g)
-	ldi r27,hi8(g)
-	ldi r20,lo8(b)
-	ldi r21,hi8(b)
-	ldi r24,lo8(-2)
-.L111:
-	cpi r24,lo8(4)
-	brlo .L109
-	ldi r22,lo8(-1)
-	movw r30,r18
-	st Z,r22
-	st X,r22
-	rjmp .L201
-.L109:
-	movw r30,r18
-	st Z,__zero_reg__
-	ldi r31,lo8(-1)
-	st X,r31
-.L201:
-	movw r30,r20
-	st Z,__zero_reg__
-	subi r24,lo8(-(1))
-	subi r18,-1
-	sbci r19,-1
-	adiw r26,1
-	subi r20,-1
-	sbci r21,-1
-	cpi r24,lo8(6)
-	brne .L111
-	rjmp .L143
-.L113:
-	movw r30,r18
-	st Z,__zero_reg__
-	st X,__zero_reg__
-	ldi r22,lo8(-1)
-	movw r30,r20
-	st Z,r22
-.L114:
-	subi r24,lo8(-(1))
-	subi r18,-1
-	sbci r19,-1
-	adiw r26,1
-	subi r20,-1
-	sbci r21,-1
-	cpi r24,lo8(6)
-	brne .+2
-	rjmp .L143
-.L115:
-	cpi r24,lo8(4)
-	brlo .L113
-	ldi r22,lo8(-1)
-	movw r30,r18
-	st Z,r22
-	st X,__zero_reg__
-	movw r30,r20
-	st Z,__zero_reg__
-	rjmp .L114
-.L103:
-	sts b+1,r9
-	sts b,r9
-	sts g+1,r9
-	sts g,r9
-	sts r+1,r9
-	sts r,r9
-	sts g+2,__zero_reg__
-	sts g+5,__zero_reg__
-	sts g+4,__zero_reg__
-	sts g+3,__zero_reg__
-	sts r+2,__zero_reg__
-	sts r+5,__zero_reg__
-	sts r+4,__zero_reg__
-	sts r+3,__zero_reg__
-	ldi r23,lo8(-1)
-	sts b+5,r23
-	sts b+4,r23
-	sts b+3,r23
-	sts b+2,r23
-	sts r+7,r23
-	sts r+6,r23
-	rjmp .L143
-.L107:
-	ldi r24,lo8(-1)
-	sts g+7,r24
-	sts g+6,r24
-	sts g+5,r24
-	sts g+4,r24
-	sts r+3,r24
-	sts r+2,r24
-	sts r+1,r24
-	sts r,r24
-	sts r+7,__zero_reg__
-	sts r+6,__zero_reg__
-	sts r+5,__zero_reg__
-	sts r+4,__zero_reg__
-	sts g+3,__zero_reg__
-	sts g+2,__zero_reg__
-	sts g+1,__zero_reg__
-	sts g,__zero_reg__
-	sts b+7,__zero_reg__
-	sts b+6,__zero_reg__
-	sts b+5,__zero_reg__
-	sts b+4,__zero_reg__
-.L207:
+	st Z+,r8
+	movw r26,r24
+	st X+,__zero_reg__
+	movw r24,r26
+	movw r26,r20
+	st X+,__zero_reg__
+	movw r20,r26
+	ldi r27,hi8(r+4)
+	cpi r30,lo8(r+4)
+	cpc r31,r27
+	brne .L104
+	rjmp .L131
+.L100:
 	sts b+3,__zero_reg__
 	sts b+2,__zero_reg__
 	sts b+1,__zero_reg__
 	sts b,__zero_reg__
-	rjmp .L143
-.L102:
-	ldd r26,Y+7
-	cpi r26,lo8(13)
-	breq .L118
-	cpi r26,lo8(14)
+	rjmp .L131
+.L188:
+	ldd r30,Y+7
+	cpi r30,lo8(13)
+	breq .L107
+	cpi r30,lo8(14)
 	breq .+2
-	rjmp .L213
+	rjmp .L200
 	lds r24,rgb2
 	lds r25,rgb2+1
 	lds r20,rgb2+2
@@ -1320,15 +1209,15 @@ const_light:
 	ldi r19,hi8(g)
 	ldi r22,lo8(b)
 	ldi r23,hi8(b)
-	rjmp .L122
-.L118:
+	rjmp .L111
+.L107:
 	ldi r30,lo8(b)
 	ldi r31,hi8(b)
 	ldi r24,lo8(g)
 	ldi r25,hi8(g)
 	ldi r20,lo8(r)
 	ldi r21,hi8(r)
-.L120:
+.L109:
 	st Z+,__zero_reg__
 	movw r26,r24
 	st X+,__zero_reg__
@@ -1336,21 +1225,17 @@ const_light:
 	movw r26,r20
 	st X+,__zero_reg__
 	movw r20,r26
-	ldi r27,hi8(b+8)
-	cpi r30,lo8(b+8)
+	ldi r27,hi8(b+4)
+	cpi r30,lo8(b+4)
 	cpc r31,r27
-	brne .L120
+	brne .L109
 	ldi r30,lo8(-1)
-	sts b+7,r30
-	sts r+6,r30
-	sts g+5,r30
-	sts b+4,r30
 	sts r+3,r30
 	sts g+2,r30
 	sts b+1,r30
 	sts r,r30
-	rjmp .L143
-.L122:
+	rjmp .L131
+.L111:
 	st Z+,r24
 	movw r26,r18
 	st X+,r25
@@ -1358,36 +1243,36 @@ const_light:
 	movw r26,r22
 	st X+,r20
 	movw r22,r26
-	ldi r27,hi8(r+8)
-	cpi r30,lo8(r+8)
+	ldi r27,hi8(r+4)
+	cpi r30,lo8(r+4)
 	cpc r31,r27
-	brne .L122
+	brne .L111
 	lds r18,rgbs.1975
 	cpse r18,__zero_reg__
-	rjmp .L123
+	rjmp .L112
 	subi r25,lo8(-(1))
 	sts rgb2+1,r25
 	subi r24,lo8(-(-1))
 	sts rgb2,r24
-	rjmp .L203
-.L123:
+	rjmp .L191
+.L112:
 	cpi r18,lo8(1)
 	breq .+2
-	rjmp .L143
+	rjmp .L131
 	subi r25,lo8(-(-1))
 	sts rgb2+1,r25
 	subi r24,lo8(-(1))
 	sts rgb2,r24
-	rjmp .L206
-.L213:
+	rjmp .L194
+.L200:
 	ldd r30,Y+7
 	cpi r30,lo8(16)
 	brne .+2
-	rjmp .L126
-	brsh .L127
+	rjmp .L114
+	brsh .L115
 	cpi r30,lo8(15)
 	breq .+2
-	rjmp .L125
+	rjmp .L105
 	lds r24,rgb3
 	lds r20,rgb3+1
 	lds r25,rgb3+2
@@ -1397,15 +1282,15 @@ const_light:
 	ldi r19,hi8(g)
 	ldi r22,lo8(b)
 	ldi r23,hi8(b)
-	rjmp .L131
-.L127:
+	rjmp .L119
+.L115:
 	ldd r31,Y+7
 	cpi r31,lo8(17)
 	brne .+2
-	rjmp .L129
+	rjmp .L117
 	cpi r31,lo8(18)
 	breq .+2
-	rjmp .L125
+	rjmp .L105
 	lds r24,tmpsch.1976
 	mov r18,r24
 	ldi r19,0
@@ -1427,8 +1312,8 @@ const_light:
 	ldi r19,hi8(g)
 	ldi r16,lo8(b)
 	ldi r17,hi8(b)
-	rjmp .L141
-.L131:
+	rjmp .L129
+.L119:
 	st Z+,r24
 	movw r26,r18
 	st X+,r20
@@ -1436,39 +1321,39 @@ const_light:
 	movw r26,r22
 	st X+,r25
 	movw r22,r26
-	ldi r27,hi8(r+8)
-	cpi r30,lo8(r+8)
+	ldi r27,hi8(r+4)
+	cpi r30,lo8(r+4)
 	cpc r31,r27
-	brne .L131
+	brne .L119
 	lds r18,rgbs.1975
 	cpse r18,__zero_reg__
-	rjmp .L132
+	rjmp .L120
 	subi r25,lo8(-(1))
 	sts rgb3+2,r25
 	subi r24,lo8(-(-1))
 	sts rgb3,r24
-.L203:
+.L191:
 	cpi r25,lo8(-1)
 	breq .+2
-	rjmp .L143
+	rjmp .L131
 	sts rgbs.1975,r7
-	rjmp .L143
-.L132:
+	rjmp .L131
+.L120:
 	cpi r18,lo8(1)
 	breq .+2
-	rjmp .L143
+	rjmp .L131
 	subi r25,lo8(-(-1))
 	sts rgb3+2,r25
 	subi r24,lo8(-(1))
 	sts rgb3,r24
-.L206:
+.L194:
 	cpi r24,lo8(-1)
 	breq .+2
-	rjmp .L143
-.L137:
+	rjmp .L131
+.L125:
 	sts rgbs.1975,__zero_reg__
-	rjmp .L143
-.L126:
+	rjmp .L131
+.L114:
 	lds r20,rgb4
 	lds r25,rgb4+1
 	lds r24,rgb4+2
@@ -1478,7 +1363,7 @@ const_light:
 	ldi r19,hi8(g)
 	ldi r22,lo8(b)
 	ldi r23,hi8(b)
-.L134:
+.L122:
 	st Z+,r20
 	movw r26,r18
 	st X+,r25
@@ -1486,28 +1371,28 @@ const_light:
 	movw r26,r22
 	st X+,r24
 	movw r22,r26
-	ldi r27,hi8(r+8)
-	cpi r30,lo8(r+8)
+	ldi r27,hi8(r+4)
+	cpi r30,lo8(r+4)
 	cpc r31,r27
-	brne .L134
+	brne .L122
 	lds r18,rgbs.1975
 	cpse r18,__zero_reg__
-	rjmp .L135
+	rjmp .L123
 	subi r25,lo8(-(1))
 	sts rgb4+1,r25
 	subi r24,lo8(-(-1))
 	sts rgb4+2,r24
-	rjmp .L203
-.L135:
+	rjmp .L191
+.L123:
 	cpi r18,lo8(1)
 	breq .+2
-	rjmp .L143
+	rjmp .L131
 	subi r25,lo8(-(-1))
 	sts rgb4+1,r25
 	subi r24,lo8(-(1))
 	sts rgb4+2,r24
-	rjmp .L206
-.L129:
+	rjmp .L194
+.L117:
 	lds r20,rgb
 	lds r25,rgb+1
 	lds r24,rgb+2
@@ -1517,7 +1402,7 @@ const_light:
 	ldi r19,hi8(g)
 	ldi r22,lo8(b)
 	ldi r23,hi8(b)
-.L138:
+.L126:
 	st Z+,r20
 	movw r26,r18
 	st X+,r25
@@ -1525,43 +1410,43 @@ const_light:
 	movw r26,r22
 	st X+,r24
 	movw r22,r26
-	ldi r27,hi8(r+8)
-	cpi r30,lo8(r+8)
+	ldi r27,hi8(r+4)
+	cpi r30,lo8(r+4)
 	cpc r31,r27
-	brne .L138
+	brne .L126
 	lds r18,rgbs.1975
 	cpse r18,__zero_reg__
-	rjmp .L139
+	rjmp .L127
 	subi r25,lo8(-(1))
 	sts rgb+1,r25
 	subi r20,lo8(-(-1))
 	sts rgb,r20
-	rjmp .L203
-.L139:
+	rjmp .L191
+.L127:
 	cpi r18,lo8(1)
-	brne .L140
+	brne .L128
 	subi r24,lo8(-(1))
 	sts rgb+2,r24
 	subi r25,lo8(-(-1))
 	sts rgb+1,r25
 	cpi r24,lo8(-1)
 	breq .+2
-	rjmp .L143
+	rjmp .L131
 	sts rgbs.1975,r6
-	rjmp .L143
-.L140:
+	rjmp .L131
+.L128:
 	cpi r18,lo8(2)
 	breq .+2
-	rjmp .L137
+	rjmp .L125
 	subi r24,lo8(-(-1))
 	sts rgb+2,r24
 	subi r20,lo8(-(1))
 	sts rgb,r20
 	tst r24
 	brne .+2
-	rjmp .L137
-	rjmp .L143
-.L141:
+	rjmp .L125
+	rjmp .L131
+.L129:
 	st Z+,r20
 	movw r26,r18
 	st X+,r25
@@ -1569,53 +1454,53 @@ const_light:
 	movw r26,r16
 	st X+,r21
 	movw r16,r26
-	ldi r27,hi8(r+8)
-	cpi r30,lo8(r+8)
+	ldi r27,hi8(r+4)
+	cpi r30,lo8(r+4)
 	cpc r31,r27
-	brne .L141
+	brne .L129
 	subi r24,lo8(-(1))
 	cpi r24,lo8(9)
-	brsh .L142
+	brsh .L130
 	sts tmpsch.1976,r24
-	rjmp .L143
-.L142:
+	rjmp .L131
+.L130:
 	sts tmpsch.1976,r7
-	rjmp .L143
-.L125:
+	rjmp .L131
+.L105:
 	ldd r30,Y+7
 	cpi r30,lo8(20)
-	breq .L144
-	brsh .L145
+	breq .L132
+	brsh .L133
 	cpi r30,lo8(19)
-	breq .L146
-	rjmp .L143
-.L145:
+	breq .L134
+	rjmp .L131
+.L133:
 	ldd r31,Y+7
 	cpi r31,lo8(21)
 	brne .+2
-	rjmp .L147
+	rjmp .L135
 	cpi r31,lo8(22)
 	brne .+2
-	rjmp .L148
-	rjmp .L143
-.L146:
+	rjmp .L136
+	rjmp .L131
+.L134:
 	lds r24,counter.1977
 	subi r24,lo8(-(1))
 	cpi r24,lo8(60)
-	brsh .L149
+	brsh .L137
 	sts counter.1977,r24
-	rjmp .L150
-.L149:
+	rjmp .L138
+.L137:
 	sts counter.1977,__zero_reg__
-	ldi r22,lo8(8)
+	ldi r22,lo8(4)
 	ldi r24,lo8(wave_1)
 	ldi r25,hi8(wave_1)
 	rcall l_shift
-	ldi r22,lo8(8)
+	ldi r22,lo8(4)
 	ldi r24,lo8(wave_2)
 	ldi r25,hi8(wave_2)
 	rcall r_shift
-.L150:
+.L138:
 	ldi r30,lo8(wave_1)
 	ldi r31,hi8(wave_1)
 	ldi r20,lo8(r)
@@ -1626,7 +1511,7 @@ const_light:
 	ldi r25,hi8(g)
 	ldi r16,lo8(b)
 	ldi r17,hi8(b)
-.L151:
+.L139:
 	ld r22,Z+
 	movw r26,r20
 	st X+,r22
@@ -1640,30 +1525,30 @@ const_light:
 	movw r26,r16
 	st X+,__zero_reg__
 	movw r16,r26
-	ldi r22,lo8(wave_1+8)
-	ldi r23,hi8(wave_1+8)
+	ldi r22,lo8(wave_1+4)
+	ldi r23,hi8(wave_1+4)
 	cp r22,r30
 	cpc r23,r31
-	brne .L151
-	rjmp .L143
-.L144:
+	brne .L139
+	rjmp .L131
+.L132:
 	lds r24,counter.1977
 	subi r24,lo8(-(1))
 	cpi r24,lo8(60)
-	brsh .L152
+	brsh .L140
 	sts counter.1977,r24
-	rjmp .L153
-.L152:
+	rjmp .L141
+.L140:
 	sts counter.1977,__zero_reg__
-	ldi r22,lo8(8)
+	ldi r22,lo8(4)
 	ldi r24,lo8(wave_1)
 	ldi r25,hi8(wave_1)
 	rcall l_shift
-	ldi r22,lo8(8)
+	ldi r22,lo8(4)
 	ldi r24,lo8(wave_2)
 	ldi r25,hi8(wave_2)
 	rcall r_shift
-.L153:
+.L141:
 	ldi r30,lo8(wave_1)
 	ldi r31,hi8(wave_1)
 	ldi r20,lo8(r)
@@ -1674,7 +1559,7 @@ const_light:
 	ldi r25,hi8(wave_2)
 	ldi r16,lo8(b)
 	ldi r17,hi8(b)
-.L154:
+.L142:
 	ld r22,Z+
 	movw r26,r20
 	st X+,r22
@@ -1688,29 +1573,29 @@ const_light:
 	movw r26,r16
 	st X+,r22
 	movw r16,r26
-	ldi r27,hi8(wave_1+8)
-	cpi r30,lo8(wave_1+8)
+	ldi r27,hi8(wave_1+4)
+	cpi r30,lo8(wave_1+4)
 	cpc r31,r27
-	brne .L154
-	rjmp .L143
-.L147:
+	brne .L142
+	rjmp .L131
+.L135:
 	lds r24,counter.1977
 	subi r24,lo8(-(1))
 	cpi r24,lo8(60)
-	brsh .L155
+	brsh .L143
 	sts counter.1977,r24
-	rjmp .L156
-.L155:
+	rjmp .L144
+.L143:
 	sts counter.1977,__zero_reg__
-	ldi r22,lo8(8)
+	ldi r22,lo8(4)
 	ldi r24,lo8(wave_1)
 	ldi r25,hi8(wave_1)
 	rcall l_shift
-	ldi r22,lo8(8)
+	ldi r22,lo8(4)
 	ldi r24,lo8(wave_2)
 	ldi r25,hi8(wave_2)
 	rcall r_shift
-.L156:
+.L144:
 	ldi r30,lo8(r)
 	ldi r31,hi8(r)
 	ldi r20,lo8(wave_1)
@@ -1721,7 +1606,7 @@ const_light:
 	ldi r25,hi8(wave_2)
 	ldi r16,lo8(b)
 	ldi r17,hi8(b)
-.L157:
+.L145:
 	st Z+,__zero_reg__
 	movw r26,r20
 	ld r22,X+
@@ -1735,29 +1620,29 @@ const_light:
 	movw r26,r16
 	st X+,r22
 	movw r16,r26
-	ldi r27,hi8(r+8)
-	cpi r30,lo8(r+8)
+	ldi r27,hi8(r+4)
+	cpi r30,lo8(r+4)
 	cpc r31,r27
-	brne .L157
-	rjmp .L143
-.L148:
+	brne .L145
+	rjmp .L131
+.L136:
 	lds r24,counter.1977
 	subi r24,lo8(-(1))
 	cpi r24,lo8(60)
-	brsh .L158
+	brsh .L146
 	sts counter.1977,r24
-	rjmp .L159
-.L158:
+	rjmp .L147
+.L146:
 	sts counter.1977,__zero_reg__
-	ldi r22,lo8(8)
+	ldi r22,lo8(4)
 	ldi r24,lo8(wave_1)
 	ldi r25,hi8(wave_1)
 	rcall l_shift
-	ldi r22,lo8(8)
+	ldi r22,lo8(4)
 	ldi r24,lo8(wave_2)
 	ldi r25,hi8(wave_2)
 	rcall r_shift
-.L159:
+.L147:
 	ldi r30,lo8(wave_3)
 	ldi r31,hi8(wave_3)
 	ldi r22,lo8(r)
@@ -1772,7 +1657,7 @@ const_light:
 	mov r14,r26
 	ldi r26,hi8(b)
 	mov r15,r26
-.L160:
+.L148:
 	ld r17,Z+
 	movw r26,r22
 	st X+,r17
@@ -1789,17 +1674,17 @@ const_light:
 	movw r26,r14
 	st X+,r17
 	movw r14,r26
-	ldi r27,hi8(wave_3+8)
-	cpi r30,lo8(wave_3+8)
+	ldi r27,hi8(wave_3+4)
+	cpi r30,lo8(wave_3+4)
 	cpc r31,r27
-	brne .L160
-.L143:
+	brne .L148
+.L131:
 	rcall check_button
 	cpi r24,lo8(1)
-	brne .L161
+	brne .L149
 	sts bbb,r24
-	rjmp .L97
-.L161:
+	rjmp .L93
+.L149:
 	lds r18,econom
 	ldi r24,lo8(r)
 	mov r14,r24
@@ -1816,9 +1701,9 @@ const_light:
 	movw r20,r10
 	movw r24,r12
 	movw r30,r14
-.L165:
+.L153:
 	cpi r18,lo8(1)
-	brne .L162
+	brne .L150
 	ld r19,Z
 	lsr r19
 	lsr r19
@@ -1832,10 +1717,10 @@ const_light:
 	ld r19,X
 	lsr r19
 	lsr r19
-	rjmp .L208
-.L162:
+	rjmp .L195
+.L150:
 	cpi r18,lo8(2)
-	brne .L164
+	brne .L152
 	ld r19,Z
 	swap r19
 	andi r19,lo8(15)
@@ -1849,10 +1734,10 @@ const_light:
 	ld r19,X
 	swap r19
 	andi r19,lo8(15)
-	rjmp .L208
-.L164:
+	rjmp .L195
+.L152:
 	cpi r18,lo8(3)
-	brne .L163
+	brne .L151
 	ld r19,Z
 	swap r19
 	lsr r19
@@ -1872,17 +1757,17 @@ const_light:
 	lsr r19
 	lsr r19
 	andi r19,lo8(3)
-.L208:
+.L195:
 	st X,r19
-.L163:
+.L151:
 	adiw r30,1
 	adiw r24,1
 	subi r20,-1
 	sbci r21,-1
-	ldi r27,hi8(r+9)
-	cpi r30,lo8(r+9)
+	ldi r27,hi8(r+5)
+	cpi r30,lo8(r+5)
 	cpc r31,r27
-	brne .L165
+	brne .L153
 	ldi r24,0
 	rcall sendByte
 	ldi r24,0
@@ -1893,12 +1778,12 @@ const_light:
 	rcall sendByte
 	ldi r16,lo8(mask+1)
 	ldi r17,hi8(mask+1)
-.L168:
+.L156:
 	movw r30,r16
 	ld r24,Z+
 	movw r16,r30
 	tst r24
-	breq .L166
+	breq .L154
 	movw r26,r10
 	ld r2,X
 	movw r30,r12
@@ -1912,8 +1797,8 @@ const_light:
 	mov r24,r3
 	rcall sendByte
 	mov r24,r4
-	rjmp .L209
-.L166:
+	rjmp .L196
+.L154:
 	ldi r24,lo8(-1)
 	rcall sendByte
 	ldi r24,0
@@ -1921,7 +1806,7 @@ const_light:
 	ldi r24,0
 	rcall sendByte
 	ldi r24,0
-.L209:
+.L196:
 	rcall sendByte
 	ldi r27,-1
 	sub r10,r27
@@ -1932,11 +1817,11 @@ const_light:
 	ldi r31,-1
 	sub r14,r31
 	sbc r15,r31
-	ldi r18,lo8(mask+9)
-	ldi r19,hi8(mask+9)
+	ldi r18,lo8(mask+5)
+	ldi r19,hi8(mask+5)
 	cp r18,r16
 	cpc r19,r17
-	brne .L168
+	brne .L156
 	ldi r24,lo8(-1)
 	rcall sendByte
 	ldi r24,lo8(-1)
@@ -1951,11 +1836,11 @@ const_light:
 	brne 1b
 	rjmp .
 	nop
-	inc r8
-	rjmp .L98
-.L212:
+	inc r9
+	rjmp .L94
+.L199:
 	ldi r24,0
-.L97:
+.L93:
 /* epilogue start */
 	adiw r28,7
 	in __tmp_reg__,__SREG__
@@ -1998,45 +1883,25 @@ const_light_legacy:
 	mov r28,r20
 	rcall flush_mask
 	sbrs r28,0
-	rjmp .L215
+	rjmp .L202
 	ldi r24,lo8(1)
 	sts mask+1,r24
-.L215:
+.L202:
 	sbrs r28,1
-	rjmp .L216
+	rjmp .L203
 	ldi r24,lo8(1)
 	sts mask+2,r24
-.L216:
+.L203:
 	sbrs r28,2
-	rjmp .L217
+	rjmp .L204
 	ldi r24,lo8(1)
 	sts mask+3,r24
-.L217:
+.L204:
 	sbrs r28,3
-	rjmp .L218
+	rjmp .L205
 	ldi r24,lo8(1)
 	sts mask+4,r24
-.L218:
-	sbrs r28,4
-	rjmp .L219
-	ldi r24,lo8(1)
-	sts mask+5,r24
-.L219:
-	sbrs r28,5
-	rjmp .L220
-	ldi r24,lo8(1)
-	sts mask+6,r24
-.L220:
-	sbrs r28,6
-	rjmp .L221
-	ldi r24,lo8(1)
-	sts mask+7,r24
-.L221:
-	sbrs r28,7
-	rjmp .L222
-	ldi r24,lo8(1)
-	sts mask+8,r24
-.L222:
+.L205:
 	mov r22,r17
 	mov r24,r29
 /* epilogue start */
@@ -2469,13 +2334,13 @@ binary:
 	rcall const_light_legacy
 	lds r24,i.1912
 	cpi r24,lo8(-1)
-	breq .L258
+	breq .L232
 	cpse r24,__zero_reg__
-	rjmp .L255
+	rjmp .L229
 	ldi r24,lo8(1)
-.L258:
+.L232:
 	sts a.1913,r24
-.L255:
+.L229:
 	ret
 	.size	binary, .-binary
 .global	svetobobr
@@ -2645,49 +2510,45 @@ mode_4_18:
 /* frame size = 0 */
 /* stack size = 0 */
 .L__stack_usage = 0
-	lds r24,a.1884
-	lds r25,a.1884+1
-	ldi r18,lo8(8)
-	ldi r19,0
-	sub r18,r24
-	sbc r19,r25
-	ldi r30,lo8(mask+1)
-	ldi r31,hi8(mask+1)
-	ldi r24,lo8(1)
+	lds r18,a.1884
+	lds r19,a.1884+1
+	ldi r24,lo8(4)
 	ldi r25,0
-	ldi r21,lo8(1)
-.L264:
-	cpi r24,lo8(1)
-	breq .L261
-	cp r18,r24
-	cpc r19,r25
-	breq .L261
-	cpi r24,lo8(8)
-	brne .L262
-.L261:
-	st Z,r21
-	rjmp .L263
-.L262:
-	st Z,__zero_reg__
-.L263:
-	adiw r30,1
-	adiw r24,1
-	cpi r24,9
+	sub r24,r18
+	sbc r25,r19
+	ldi r18,lo8(1)
+	sts mask+1,r18
+	cpi r24,2
 	cpc r25,__zero_reg__
-	brne .L264
+	brne .L235
+	sts mask+2,r18
+	rjmp .L236
+.L235:
+	sts mask+2,__zero_reg__
+.L236:
+	sbiw r24,3
+	brne .L237
+	ldi r24,lo8(1)
+	sts mask+3,r24
+	rjmp .L238
+.L237:
+	sts mask+3,__zero_reg__
+.L238:
+	ldi r24,lo8(1)
+	sts mask+4,r24
 	ldi r22,lo8(1)
 	lds r24,mode
 	rcall const_light
 	lds r24,a.1884
 	lds r25,a.1884+1
 	adiw r24,1
-	cpi r24,9
+	cpi r24,5
 	cpc r25,__zero_reg__
-	brsh .L265
+	brsh .L239
 	sts a.1884+1,r25
 	sts a.1884,r24
 	ret
-.L265:
+.L239:
 	sts a.1884+1,__zero_reg__
 	sts a.1884,__zero_reg__
 	ret
@@ -2707,39 +2568,39 @@ mode_8_18:
 	subi r18,lo8(mask)
 	sbci r19,hi8(mask)
 	ldi r25,lo8(1)
-.L275:
+.L245:
 	movw r20,r18
 	add r20,r30
 	adc r21,r31
 	sbrc r20,1
-	rjmp .L272
+	rjmp .L242
 	cpi r24,lo8(1)
-	breq .L272
-	cpi r24,lo8(8)
-	brne .L273
-.L272:
+	breq .L242
+	cpi r24,lo8(4)
+	brne .L243
+.L242:
 	st Z,r25
-	rjmp .L274
-.L273:
+	rjmp .L244
+.L243:
 	st Z,__zero_reg__
-.L274:
+.L244:
 	subi r24,lo8(-(1))
 	adiw r30,1
-	cpi r24,lo8(9)
-	brne .L275
+	cpi r24,lo8(5)
+	brne .L245
 	ldi r22,lo8(1)
 	lds r24,mode
 	rcall const_light
 	lds r24,a.1899
 	lds r25,a.1899+1
 	adiw r24,1
-	cpi r24,9
+	cpi r24,5
 	cpc r25,__zero_reg__
-	brsh .L276
+	brsh .L246
 	sts a.1899+1,r25
 	sts a.1899,r24
 	ret
-.L276:
+.L246:
 	sts a.1899+1,__zero_reg__
 	sts a.1899,__zero_reg__
 	ret
@@ -2752,81 +2613,81 @@ make_serie:
 /* stack size = 0 */
 .L__stack_usage = 0
 	cpi r24,lo8(2)
-	breq .L284
+	breq .L254
 	cpi r24,lo8(3)
-	breq .L285
+	breq .L255
 	cpi r24,lo8(1)
-	brne .L309
+	brne .L279
 	rcall mode_1
 	ret
-.L284:
+.L254:
 	rcall mode_2
 	ret
-.L285:
+.L255:
 	rcall mode_3
 	ret
-.L309:
+.L279:
 	cpi r24,lo8(5)
-	breq .L289
+	breq .L259
 	cpi r24,lo8(6)
-	breq .L290
+	breq .L260
 	cpi r24,lo8(4)
-	brne .L311
+	brne .L281
 	rcall mode_4
 	ret
-.L289:
+.L259:
 	rcall mode_5
 	ret
-.L290:
+.L260:
 	rcall mode_6
 	ret
-.L311:
+.L281:
 	cpi r24,lo8(8)
-	breq .L294
-	brsh .L295
+	breq .L264
+	brsh .L265
 	cpi r24,lo8(7)
-	brne .L293
+	brne .L263
 	rjmp mode_7
-.L295:
+.L265:
 	cpi r24,lo8(9)
-	breq .L297
+	breq .L267
 	cpi r24,lo8(10)
-	brne .L293
+	brne .L263
 	rjmp mode_10
-.L294:
+.L264:
 	rjmp mode_8
-.L297:
+.L267:
 	rjmp mode_9
-.L293:
+.L263:
 	cpi r24,lo8(12)
-	breq .L300
-	brsh .L301
+	breq .L270
+	brsh .L271
 	cpi r24,lo8(11)
-	brne .L299
+	brne .L269
 	rjmp heart
-.L301:
+.L271:
 	cpi r24,lo8(13)
-	breq .L303
+	breq .L273
 	cpi r24,lo8(14)
-	brne .L299
+	brne .L269
 	rjmp mode_8_18
-.L303:
+.L273:
 	rjmp mode_4_18
-.L300:
+.L270:
 	rjmp binary
-.L299:
+.L269:
 	cpi r24,lo8(16)
-	breq .L306
+	breq .L276
 	cpi r24,lo8(17)
-	breq .L307
+	breq .L277
 	cpi r24,lo8(15)
-	brne .L310
+	brne .L280
 	rjmp svetobobr
-.L306:
+.L276:
 	rjmp demo
-.L307:
+.L277:
 	rjmp demo_long
-.L310:
+.L280:
 	ret
 	.size	make_serie, .-make_serie
 .global	demo
@@ -2846,21 +2707,21 @@ demo:
 	lds r24,dm.1919
 	subi r24,lo8(-(1))
 	cpi r24,lo8(13)
-	brsh .L313
+	brsh .L283
 	sts dm.1919,r24
-	rjmp .L312
-.L313:
+	rjmp .L282
+.L283:
 	ldi r25,lo8(1)
 	sts dm.1919,r25
 	lds r24,ds.1918
 	subi r24,lo8(-(1))
 	cpi r24,lo8(15)
-	brsh .L315
+	brsh .L285
 	sts ds.1918,r24
-	rjmp .L312
-.L315:
+	rjmp .L282
+.L285:
 	sts ds.1918,r25
-.L312:
+.L282:
 /* epilogue start */
 	pop r28
 	ret
@@ -2882,29 +2743,29 @@ demo_long:
 	lds r24,counter.1925
 	subi r24,lo8(-(1))
 	cpi r24,lo8(-1)
-	breq .L318
+	breq .L288
 	sts counter.1925,r24
-	rjmp .L317
-.L318:
+	rjmp .L287
+.L288:
 	sts counter.1925,__zero_reg__
 	lds r24,dm.1924
 	subi r24,lo8(-(1))
 	cpi r24,lo8(13)
-	brsh .L320
+	brsh .L290
 	sts dm.1924,r24
-	rjmp .L317
-.L320:
+	rjmp .L287
+.L290:
 	ldi r25,lo8(1)
 	sts dm.1924,r25
 	lds r24,ds.1923
 	subi r24,lo8(-(1))
 	cpi r24,lo8(15)
-	brsh .L322
+	brsh .L292
 	sts ds.1923,r24
-	rjmp .L317
-.L322:
+	rjmp .L287
+.L292:
 	sts ds.1923,r25
-.L317:
+.L287:
 /* epilogue start */
 	pop r28
 	ret
@@ -2931,7 +2792,7 @@ main:
 /* #NOAPP */
 	ldi r28,lo8(16)
 	ldi r29,lo8(32)
-.L324:
+.L294:
 	sts bbb,__zero_reg__
 /* #APP */
  ;  143 "poi-4LED-v2-1.c" 1
@@ -2940,7 +2801,7 @@ main:
 /* #NOAPP */
 	lds r24,power
 	cpse r24,__zero_reg__
-	rjmp .L325
+	rjmp .L295
 	ldi r22,lo8(1)
 	rcall const_light
 	out 0x17,__zero_reg__
@@ -2966,21 +2827,21 @@ main:
 	in r24,0x35
 	andi r24,lo8(-33)
 	out 0x35,r24
-	rjmp .L324
-.L325:
+	rjmp .L294
+.L295:
 	lds r24,stat
 	cpse r24,__zero_reg__
-	rjmp .L327
+	rjmp .L297
 	lds r24,fav_on
 	cpse r24,__zero_reg__
-	rjmp .L328
+	rjmp .L298
 	lds r24,serie
 	rcall make_serie
-	rjmp .L324
-.L328:
+	rjmp .L294
+.L298:
 	lds r24,counter
 	tst r24
-	breq .L329
+	breq .L299
 	lds r17,mode
 	lds r24,pointer
 	ldi r25,0
@@ -2995,12 +2856,12 @@ main:
 	ld r24,Z
 	rcall make_serie
 	sts mode,r17
-	rjmp .L324
-.L329:
+	rjmp .L294
+.L299:
 	ldi r24,lo8(100)
-.L327:
+.L297:
 	rcall process_signal
-	rjmp .L324
+	rjmp .L294
 	.size	main, .-main
 	.local	counter.1977
 	.comm	counter.1977,1,1
@@ -3047,40 +2908,28 @@ a.1913:
 	.comm	button_state.1781,1,1
 .global	wave_3
 	.type	wave_3, @object
-	.size	wave_3, 8
+	.size	wave_3, 4
 wave_3:
 	.byte	50
-	.byte	-106
 	.byte	-1
-	.byte	-106
 	.byte	50
-	.byte	0
-	.byte	0
 	.byte	0
 .global	wave_2
 	.type	wave_2, @object
-	.size	wave_2, 8
+	.size	wave_2, 4
 wave_2:
 	.byte	-1
-	.byte	-61
 	.byte	-116
-	.byte	95
 	.byte	55
-	.byte	25
 	.byte	5
-	.byte	0
 .global	wave_1
 	.type	wave_1, @object
-	.size	wave_1, 8
+	.size	wave_1, 4
 wave_1:
 	.byte	-1
-	.byte	-61
 	.byte	-116
-	.byte	95
 	.byte	55
-	.byte	25
 	.byte	5
-	.byte	0
 	.local	rgb4
 	.comm	rgb4,3,1
 	.local	rgb3
@@ -3095,10 +2944,10 @@ wave_1:
 	.size	bbb, 1
 bbb:
 	.zero	1
-	.comm	mask,9,1
-	.comm	b,8,1
-	.comm	g,8,1
-	.comm	r,8,1
+	.comm	mask,5,1
+	.comm	b,4,1
+	.comm	g,4,1
+	.comm	r,4,1
 	.comm	stat,1,1
 .global	e_econom
 	.section	.eeprom,"aw",@progbits
@@ -3198,8 +3047,8 @@ econom:
 	.comm	serie,1,1
 	.comm	mode,1,1
 	.comm	pal,2,1
-	.comm	scheme,16,1
-	.comm	pack,16,1
+	.comm	scheme,8,1
+	.comm	pack,8,1
 	.ident	"GCC: (GNU) 5.4.0"
 .global __do_copy_data
 .global __do_clear_bss
