@@ -1,4 +1,4 @@
-// t45	attiny45	38400 prog
+// t85	attiny85	38400 prog
 // board	MMCU		programm_after_make
 
 // 8LED bike backlight
