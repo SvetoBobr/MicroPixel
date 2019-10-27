@@ -19,7 +19,8 @@
 #define FRAME_DELAY 0	// there are some problems wth this constant
 #define MAX_LEVEL	255
 #define HALF_LEVEL	60
-#define PACK_SIZE	60
+
+#define PACK_SIZE	40
 
 #define MODE_GATE	6
 
@@ -57,6 +58,23 @@ unsigned char mask[PACK_SIZE+1];
 
 // >>>>>>>>>> main part >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+void send( unsigned char repeats){
+	unsigned char i, j;
+	
+	startFrame();
+	
+	for (j=0; j<repeats; j++){
+		for(i=0; i<PACK_SIZE; i++){
+			sendRGB(r[i], g[i], b[i]);
+		}
+		
+	}
+	
+	for (j=0; j<repeats; j++){
+		endFrame();
+	}
+}
+
 int main(){
 	
 	init_io();
@@ -74,8 +92,8 @@ int main(){
 			b[j]=10;
 		}
 		
-		mask[PACK_SIZE]=1;
-		sendRawRGBpack(PACK_SIZE, r, g, b, mask);	
+		send(4);
+	
 		
 			for (j=0; j<PACK_SIZE; j++){
 			r[j]=0;
@@ -84,11 +102,10 @@ int main(){
 			mask[j]=1;
 		}
 		for (j=3; j<PACK_SIZE; j+=4){
-			b[j]=10;
+			r[j]=10;
 		}
 		
-		mask[PACK_SIZE]=1;
-		sendRawRGBpack(PACK_SIZE, r, g, b, mask);
+		send(4);
 	}
 	
 	return 0;
