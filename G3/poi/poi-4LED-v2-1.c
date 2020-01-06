@@ -1,4 +1,4 @@
-// t85	attiny85	38400 prog
+// t45	attiny45	38400 prog
 // board	MMCU		programm_after_make
 
 // 8LED bike backlight
@@ -255,28 +255,48 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					flush();
 					b[1]=b[3]=g[2]=g[0]=MAX_LEVEL;
 					break;
-				case 10:	// russian flag
+				case 10:	// 
 					flush();
 					r[1]=r[3]=b[2]=b[0]=MAX_LEVEL;
 					break;
+				case 11:	// 
+					flush();
+					r[0]=r[1]=r[2]=r[3]=g[2]=g[0]=MAX_LEVEL;
+					break;
 			}		
 					
-			switch (sch){	case 11:	// green-red
+			switch (sch){	
+				case 12:	// green-red
 					flush();
 					r[1]=r[2]=g[3]=g[0]=MAX_LEVEL;
 					break;
-				case 12:	// blue-red
+				case 13:	// blue-red
 					flush();
 					b[1]=b[2]=g[3]=g[0]=MAX_LEVEL;
 					break;					
-				case 13:	// b-r-g
+				case 14:	// 
 					flush();
 					r[1]=r[2]=b[3]=b[0]=MAX_LEVEL;
+					break;
+				case 15:	// b-r-g
+					flush();
+					r[0]=r[1]=r[2]=r[3]=g[3]=g[0]=MAX_LEVEL;
 					break;
 			}
 			
 			switch (sch){		
-				case 14:	// GR rainbow
+				case 16:	// red-yellow flicker
+					for (j=0; j<LED_NUM; j++){
+						r[j]=MAX_LEVEL; 
+						g[j]=rgb2[1]; 
+						b[j]=0; 
+					}
+					rgb2[1]++;
+					if (rgb2[1]<30) rgb2[1]=30;
+
+					break;
+				
+				case 17:	// GR rainbow
 					for (j=0; j<LED_NUM; j++){
 						r[j]=rgb2[0]; 
 						g[j]=rgb2[1]; 
@@ -292,9 +312,10 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb2[0]==MAX_LEVEL) rgbs=0;
 					} 
 					break;
-				}
-				switch (sch){
-				case 15:	// RB rainbow
+					
+			}
+			switch (sch){
+				case 18:	// RB rainbow
 					for (j=0; j<LED_NUM; j++){
 
 							r[j]=rgb3[0]; 
@@ -312,7 +333,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb3[0]==MAX_LEVEL) rgbs=0;
 					} 
 					break;
-				case 16:	// GB rainbow
+				case 19:	// GB rainbow
 					for (j=0; j<LED_NUM; j++){
 							r[j]=rgb4[0]; 
 							g[j]=rgb4[1]; 
@@ -328,7 +349,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb4[2]==MAX_LEVEL) rgbs=0;
 					} 
 					break;
-				case 17:	// full rainbow
+				case 20:	// full rainbow
 					for (j=0; j<LED_NUM; j++){
 							r[j]=rgb[0]; 
 							g[j]=rgb[1]; 
@@ -349,7 +370,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb[2]==0) rgbs=0;
 					} else rgbs=0;
 					break;
-				case 18: 
+				case 21: 
 					for (j=0; j<LED_NUM; j++){
 						r[j]=mr[tmpsch];
 						g[j]=mg[tmpsch];
@@ -357,8 +378,20 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					}
 					if (++tmpsch>8) tmpsch=1;
 			}
-						switch (sch){
-				case 19:
+			switch (sch){
+				case 22:	
+					if (++counter>=60){
+						counter=0;
+						l_shift(wave_1, LED_NUM);
+						r_shift(wave_2, LED_NUM);
+					}
+					for (j=0; j<LED_NUM; j++){
+						r[j]=MAX_LEVEL;
+						g[j]=wave_2[j];
+						b[j]=0;
+					} 
+					break;
+				case 23:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -370,7 +403,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						b[j]=0;
 					} 
 					break;
-				case 20:
+				case 24:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -382,7 +415,9 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						b[j]=wave_2[j];
 					}
 					break;
-				case 21:
+			}
+			switch (sch){
+				case 25:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -395,7 +430,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						b[j]=wave_2[j];
 					}
 					break;
-				case 22:
+				case 26:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -409,7 +444,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					}
 					break;
 			}
-			
+		
 		}		
 			
 		if ( check_button()==1 ) {
