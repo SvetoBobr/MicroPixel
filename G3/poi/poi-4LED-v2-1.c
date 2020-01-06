@@ -39,12 +39,12 @@
 	#define MODE_GATE	MODE_NUM
 #endif
 
+
+
+
+
 //modes
-
 #include "./micropixel_4led_modes.h"
-
-
-
 unsigned char mode;
 unsigned char serie;//, ss;
 unsigned char power;
@@ -87,6 +87,13 @@ unsigned char power;
 #include "../button-api.c"
 #include "../opt-api.c"
 
+// watchdog
+void increment_time(){}
+void reset_timer(){}
+unsigned char check_watchdog(){
+
+	return ACTIVE;
+}
 
 // =========================================================================================================
 // =================== MAIN SECTION ========================================================================
@@ -170,6 +177,7 @@ int main(){
 			process_signal(stat);
 		} 
 
+		power = check_watchdog();
 	}
 	
 	return 0;
@@ -424,6 +432,8 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 				b[j]=b[j]>>6;	
 			}
 		sendRawRGBpack(LED_NUM, r, g, b, mask);	
+		
+		increment_time();
 	}
 	
 	return 0;

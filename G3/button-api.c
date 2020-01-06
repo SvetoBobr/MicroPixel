@@ -26,7 +26,7 @@ unsigned char stat;
 	#include "./power-api.c"
 #endif
 
-
+extern void reset_timer();
 
 ISR(PCINT0_vect){
 	cli();
@@ -75,6 +75,7 @@ unsigned char check_button(){
 	
 	if ( last_button_state == button_state ){
 		res = process_button( hold, button_state );
+		reset_timer();	// reset watchdog
 	}
 	
 	if ( button_state == NOT_PRESSED &&  last_button_state == NOT_PRESSED ){
