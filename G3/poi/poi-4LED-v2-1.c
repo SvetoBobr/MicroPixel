@@ -1,4 +1,4 @@
-// t45	attiny45	38400 prog
+// t85	attiny85	38400 prog
 // board	MMCU		programm_after_make
 
 // 8LED bike backlight
@@ -88,12 +88,31 @@ unsigned char power;
 #include "../opt-api.c"
 
 // watchdog
+unsigned int ticks=0;
+unsigned char secs=0;
+unsigned char mins=0;
 
-void increment_time(){}
-void reset_timer(){}
+void reset_timer(){
+	ticks=secs=mins=0;
+	
+	//mode=1;
+}
+
+#define T_THRESCHOLD	1000
+#define	T_AUTOSTOP		30
+
 unsigned char check_watchdog(){
-
-	return ACTIVE;
+	if (++ticks>T_THRESCHOLD){
+		ticks=0;
+		
+		if (++secs>60){
+			if (++mins==T_AUTOSTOP){
+				_set_idle();
+				return 1;
+			}
+		}
+	}
+	return 0;
 }
 
 // =========================================================================================================
@@ -178,7 +197,7 @@ int main(){
 			process_signal(stat);
 		} 
 
-		power = check_watchdog();
+		
 	}
 	
 	return 0;
@@ -450,7 +469,14 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 			
 		if ( check_button()==1 ) {
 			bbb=1;
+			reset_timer();	// reset watchdog
 			return 1;	
+		}
+		
+		if ( check_watchdog()==1) {
+			bbb=1;
+			reset_timer();	// reset watchdog
+			return 1;
 		}
 		
 		for (j=0; j<=LED_NUM; j++)
@@ -469,7 +495,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 			}
 		sendRawRGBpack(LED_NUM, r, g, b, mask);	
 		
-		increment_time();
+		//increment_time();
 	}
 	
 	return 0;
