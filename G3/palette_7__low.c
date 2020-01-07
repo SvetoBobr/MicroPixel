@@ -17,16 +17,17 @@
 
 #define black 	0
 #define red 	1
-#define yellow 	2
-#define green 	3
-#define aqua 	4
-#define blue 	5
-#define violet	6
-#define white	7
-#define combo 	8
+#define orange	2
+#define yellow 	3
+#define green 	4
+#define aqua 	5
+#define blue 	6
+#define violet	7
+#define white	8
+//#define combo 	8
 
-unsigned char mr[8]={0, MAX_LEVEL, MAX_LEVEL, 0,    0,   0,   MAX_LEVEL, MAX_LEVEL };
-unsigned char mg[8]={0, 0, 	 MAX_LEVEL, MAX_LEVEL,  MAX_LEVEL, 0,   0,   MAX_LEVEL };
-unsigned char mb[8]={0, 0, 	 0,   0,    MAX_LEVEL, MAX_LEVEL, MAX_LEVEL, MAX_LEVEL };
+unsigned char mr[9]={0, MAX_LEVEL, MAX_LEVEL,	MAX_LEVEL, 0,    0,   0,   MAX_LEVEL, MAX_LEVEL };
+unsigned char mg[9]={0, 0, 	 	   HALF_LEVEL,	MAX_LEVEL, MAX_LEVEL,  MAX_LEVEL, 0,   0,   MAX_LEVEL };
+unsigned char mb[9]={0, 0, 	 	   0,			0,   0,    MAX_LEVEL, MAX_LEVEL, MAX_LEVEL, MAX_LEVEL };
 
 #endif

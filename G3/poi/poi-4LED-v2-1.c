@@ -88,6 +88,7 @@ unsigned char power;
 #include "../opt-api.c"
 
 // watchdog
+
 void increment_time(){}
 void reset_timer(){}
 unsigned char check_watchdog(){
@@ -239,7 +240,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 	if (bbb==1) return 1;
 	
 	for (i=0; i<delay; i++){
-		if (sch<8){
+		if (sch<9){
 			for (j=0; j<LED_NUM; j++){
 				r[j]=mr[sch];
 				g[j]=mg[sch];
@@ -247,45 +248,45 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 			}
 		} else {
 			switch (sch){
-				case 8:
+				case 9:
 					flush();
 					r[1]=r[3]=g[2]=g[0]=MAX_LEVEL;
 					break;
-				case 9:
+				case 10:
 					flush();
 					b[1]=b[3]=g[2]=g[0]=MAX_LEVEL;
 					break;
-				case 10:	// 
+				case 11:	// 
 					flush();
 					r[1]=r[3]=b[2]=b[0]=MAX_LEVEL;
 					break;
-				case 11:	// 
+				case 12:	// 
 					flush();
 					r[0]=r[1]=r[2]=r[3]=g[2]=g[0]=MAX_LEVEL;
 					break;
 			}		
 					
 			switch (sch){	
-				case 12:	// green-red
+				case 13:	// green-red
 					flush();
 					r[1]=r[2]=g[3]=g[0]=MAX_LEVEL;
 					break;
-				case 13:	// blue-red
+				case 14:	// blue-red
 					flush();
 					b[1]=b[2]=g[3]=g[0]=MAX_LEVEL;
 					break;					
-				case 14:	// 
+				case 15:	// 
 					flush();
 					r[1]=r[2]=b[3]=b[0]=MAX_LEVEL;
 					break;
-				case 15:	// b-r-g
+				case 16:	// b-r-g
 					flush();
 					r[0]=r[1]=r[2]=r[3]=g[3]=g[0]=MAX_LEVEL;
 					break;
 			}
 			
 			switch (sch){		
-				case 16:	// red-yellow flicker
+				case 17:	// red-yellow flicker
 					for (j=0; j<LED_NUM; j++){
 						r[j]=MAX_LEVEL; 
 						g[j]=rgb2[1]; 
@@ -296,7 +297,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 
 					break;
 				
-				case 17:	// GR rainbow
+				case 18:	// GR rainbow
 					for (j=0; j<LED_NUM; j++){
 						r[j]=rgb2[0]; 
 						g[j]=rgb2[1]; 
@@ -315,7 +316,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					
 			}
 			switch (sch){
-				case 18:	// RB rainbow
+				case 19:	// RB rainbow
 					for (j=0; j<LED_NUM; j++){
 
 							r[j]=rgb3[0]; 
@@ -333,7 +334,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb3[0]==MAX_LEVEL) rgbs=0;
 					} 
 					break;
-				case 19:	// GB rainbow
+				case 20:	// GB rainbow
 					for (j=0; j<LED_NUM; j++){
 							r[j]=rgb4[0]; 
 							g[j]=rgb4[1]; 
@@ -349,7 +350,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb4[2]==MAX_LEVEL) rgbs=0;
 					} 
 					break;
-				case 20:	// full rainbow
+				case 21:	// full rainbow
 					for (j=0; j<LED_NUM; j++){
 							r[j]=rgb[0]; 
 							g[j]=rgb[1]; 
@@ -370,7 +371,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb[2]==0) rgbs=0;
 					} else rgbs=0;
 					break;
-				case 21: 
+				case 22: 
 					for (j=0; j<LED_NUM; j++){
 						r[j]=mr[tmpsch];
 						g[j]=mg[tmpsch];
@@ -379,7 +380,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					if (++tmpsch>8) tmpsch=1;
 			}
 			switch (sch){
-				case 22:	
+				case 23:	
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -391,7 +392,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						b[j]=0;
 					} 
 					break;
-				case 23:
+				case 24:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -403,7 +404,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						b[j]=0;
 					} 
 					break;
-				case 24:
+				case 25:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -417,7 +418,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					break;
 			}
 			switch (sch){
-				case 25:
+				case 26:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -430,7 +431,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						b[j]=wave_2[j];
 					}
 					break;
-				case 26:
+				case 27:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
