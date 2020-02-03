@@ -106,12 +106,17 @@ unsigned char check_watchdog(){
 		ticks=0;
 		
 		if (++secs>60){
-			if (++mins==T_AUTOSTOP){
+			secs=0;
+			
+			if (++mins>T_AUTOSTOP){
+				reset_timer();
+				
 				_set_idle();
 				return 1;
 			}
 		}
 	}
+	
 	return 0;
 }
 
