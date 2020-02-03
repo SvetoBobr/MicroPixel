@@ -484,6 +484,10 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 			return 1;
 		}
 		
+		if ( sch>0){
+			reset_timer();	// reset watchdog
+		}
+		
 		for (j=0; j<=LED_NUM; j++)
 			if (econom==1){
 				r[j]=r[j]>>2;
