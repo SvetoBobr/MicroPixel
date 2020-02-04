@@ -26,7 +26,7 @@ unsigned char stat;
 	#include "./power-api.c"
 #endif
 
-
+extern void reset_timer();
 
 ISR(PCINT0_vect){
 	cli();

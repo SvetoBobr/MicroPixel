@@ -8,8 +8,8 @@ void formColorPack( unsigned char n, struct RGB* color, rgb_pointer pack[], unsi
 void formColorPack_scheme( unsigned char n, rgb_pointer color[], rgb_pointer pack[], unsigned char mask  );
 
 //modes
-#define MODE_NUM	22	// modes are color schemes in new micropixel
-#define S_NUM		5	// trace patterns
+#define MODE_NUM	27	// modes are color schemes in new micropixel
+#define S_NUM		6	// trace patterns
 
 
 #define LED_NUM	PACK_SIZE

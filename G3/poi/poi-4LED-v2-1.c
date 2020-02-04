@@ -39,12 +39,12 @@
 	#define MODE_GATE	MODE_NUM
 #endif
 
+
+
+
+
 //modes
-
 #include "./micropixel_4led_modes.h"
-
-
-
 unsigned char mode;
 unsigned char serie;//, ss;
 unsigned char power;
@@ -87,6 +87,38 @@ unsigned char power;
 #include "../button-api.c"
 #include "../opt-api.c"
 
+// watchdog
+unsigned int ticks=0;
+unsigned char secs=0;
+unsigned char mins=0;
+
+void reset_timer(){
+	ticks=secs=mins=0;
+	
+	//mode=1;
+}
+
+#define T_THRESCHOLD	1000
+#define	T_AUTOSTOP		30
+
+unsigned char check_watchdog(){
+	if (++ticks>T_THRESCHOLD){
+		ticks=0;
+		
+		if (++secs>60){
+			secs=0;
+			
+			if (++mins>T_AUTOSTOP){
+				reset_timer();
+				
+				_set_idle();
+				return 1;
+			}
+		}
+	}
+	
+	return 0;
+}
 
 // =========================================================================================================
 // =================== MAIN SECTION ========================================================================
@@ -170,6 +202,7 @@ int main(){
 			process_signal(stat);
 		} 
 
+		
 	}
 	
 	return 0;
@@ -231,7 +264,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 	if (bbb==1) return 1;
 	
 	for (i=0; i<delay; i++){
-		if (sch<8){
+		if (sch<9){
 			for (j=0; j<LED_NUM; j++){
 				r[j]=mr[sch];
 				g[j]=mg[sch];
@@ -239,36 +272,56 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 			}
 		} else {
 			switch (sch){
-				case 8:
+				case 9:
 					flush();
 					r[1]=r[3]=g[2]=g[0]=MAX_LEVEL;
 					break;
-				case 9:
+				case 10:
 					flush();
 					b[1]=b[3]=g[2]=g[0]=MAX_LEVEL;
 					break;
-				case 10:	// russian flag
+				case 11:	// 
 					flush();
 					r[1]=r[3]=b[2]=b[0]=MAX_LEVEL;
 					break;
+				case 12:	// 
+					flush();
+					r[0]=r[1]=r[2]=r[3]=g[2]=g[0]=MAX_LEVEL;
+					break;
 			}		
 					
-			switch (sch){	case 11:	// green-red
+			switch (sch){	
+				case 13:	// green-red
 					flush();
 					r[1]=r[2]=g[3]=g[0]=MAX_LEVEL;
 					break;
-				case 12:	// blue-red
+				case 14:	// blue-red
 					flush();
 					b[1]=b[2]=g[3]=g[0]=MAX_LEVEL;
 					break;					
-				case 13:	// b-r-g
+				case 15:	// 
 					flush();
 					r[1]=r[2]=b[3]=b[0]=MAX_LEVEL;
+					break;
+				case 16:	// b-r-g
+					flush();
+					r[0]=r[1]=r[2]=r[3]=g[3]=g[0]=MAX_LEVEL;
 					break;
 			}
 			
 			switch (sch){		
-				case 14:	// GR rainbow
+				case 17:	// red-yellow flicker
+					for (j=0; j<LED_NUM; j++){
+						r[j]=MAX_LEVEL; 
+						g[j]=rgb2[1]; 
+						b[j]=0; 
+					}
+					rgb2[1]++;
+					if (rgb2[1]<30) rgb2[1]=30;
+
+					break;
+				
+				case 18:	// GR rainbow
 					for (j=0; j<LED_NUM; j++){
 						r[j]=rgb2[0]; 
 						g[j]=rgb2[1]; 
@@ -284,9 +337,10 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb2[0]==MAX_LEVEL) rgbs=0;
 					} 
 					break;
-				}
-				switch (sch){
-				case 15:	// RB rainbow
+					
+			}
+			switch (sch){
+				case 19:	// RB rainbow
 					for (j=0; j<LED_NUM; j++){
 
 							r[j]=rgb3[0]; 
@@ -304,7 +358,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb3[0]==MAX_LEVEL) rgbs=0;
 					} 
 					break;
-				case 16:	// GB rainbow
+				case 20:	// GB rainbow
 					for (j=0; j<LED_NUM; j++){
 							r[j]=rgb4[0]; 
 							g[j]=rgb4[1]; 
@@ -320,7 +374,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb4[2]==MAX_LEVEL) rgbs=0;
 					} 
 					break;
-				case 17:	// full rainbow
+				case 21:	// full rainbow
 					for (j=0; j<LED_NUM; j++){
 							r[j]=rgb[0]; 
 							g[j]=rgb[1]; 
@@ -341,7 +395,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						if (rgb[2]==0) rgbs=0;
 					} else rgbs=0;
 					break;
-				case 18: 
+				case 22: 
 					for (j=0; j<LED_NUM; j++){
 						r[j]=mr[tmpsch];
 						g[j]=mg[tmpsch];
@@ -349,8 +403,20 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					}
 					if (++tmpsch>8) tmpsch=1;
 			}
-						switch (sch){
-				case 19:
+			switch (sch){
+				case 23:	
+					if (++counter>=60){
+						counter=0;
+						l_shift(wave_1, LED_NUM);
+						r_shift(wave_2, LED_NUM);
+					}
+					for (j=0; j<LED_NUM; j++){
+						r[j]=MAX_LEVEL;
+						g[j]=wave_2[j];
+						b[j]=0;
+					} 
+					break;
+				case 24:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -362,7 +428,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						b[j]=0;
 					} 
 					break;
-				case 20:
+				case 25:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -374,7 +440,9 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						b[j]=wave_2[j];
 					}
 					break;
-				case 21:
+			}
+			switch (sch){
+				case 26:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -387,7 +455,7 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 						b[j]=wave_2[j];
 					}
 					break;
-				case 22:
+				case 27:
 					if (++counter>=60){
 						counter=0;
 						l_shift(wave_1, LED_NUM);
@@ -401,12 +469,23 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 					}
 					break;
 			}
-			
+		
 		}		
 			
 		if ( check_button()==1 ) {
 			bbb=1;
+			reset_timer();	// reset watchdog
 			return 1;	
+		}
+		
+		if ( check_watchdog()==1) {
+			bbb=1;
+			reset_timer();	// reset watchdog
+			return 1;
+		}
+		
+		if ( sch>0){
+			reset_timer();	// reset watchdog
 		}
 		
 		for (j=0; j<=LED_NUM; j++)
@@ -424,6 +503,8 @@ unsigned char  const_light( unsigned char sch,  unsigned char delay){
 				b[j]=b[j]>>6;	
 			}
 		sendRawRGBpack(LED_NUM, r, g, b, mask);	
+		
+		//increment_time();
 	}
 	
 	return 0;

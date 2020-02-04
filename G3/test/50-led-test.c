@@ -37,7 +37,7 @@ unsigned char serie;//, ss;
 unsigned char power;
 
 
-#define START_BYTE	226
+#define START_BYTE	227	// 226
 #include "../apa102-driver-2.c"
 
 // =========================================================================================================
@@ -75,6 +75,7 @@ void send( unsigned char repeats){
 	}
 }
 
+#define NNN	5
 int main(){
 	
 	init_io();
@@ -84,28 +85,32 @@ int main(){
 		
 		for (j=0; j<PACK_SIZE; j++){
 			r[j]=10;
-			g[j]=0;
-			b[j]=0;
-			mask[j]=1;
-		}
-		for (j=3; j<PACK_SIZE; j+=4){
-			b[j]=10;
-		}
-		
-		send(4);
-	
-		
-			for (j=0; j<PACK_SIZE; j++){
-			r[j]=0;
 			g[j]=10;
 			b[j]=0;
 			mask[j]=1;
 		}
-		for (j=3; j<PACK_SIZE; j+=4){
-			r[j]=10;
+		for (j=9; j<PACK_SIZE; j+=10){
+			r[j]=0;
+			g[j]=10;
+			b[j]=255;
 		}
 		
-		send(4);
+		send(NNN);
+	
+		/*
+			for (j=0; j<PACK_SIZE; j++){
+			r[j]=0;
+			g[j]=0;
+			b[j]=255;
+			mask[j]=1;
+		}
+		for (j=1; j<PACK_SIZE; j+=2){
+			r[j]=0;
+			g[j]=255;
+			b[j]=0;
+		}
+		
+		send(NNN);*/
 	}
 	
 	return 0;

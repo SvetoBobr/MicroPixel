@@ -82,6 +82,10 @@ void mode_5(){	// flower
 
 }
 
+void mode_faded(){
+	const_light_legacy(0, 30, 0 );
+}
+
 
 #define SP_L	2
 #define	SB_L	1
